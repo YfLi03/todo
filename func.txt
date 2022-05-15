@@ -1,0 +1,32 @@
+# Ordinary Item
+Name
+Date
+Emergency?
+Lasting Time?
+    - Precise Time (f,t)
+Explanation?
+Auto Repeat?
+Manual Repeat?(Regularly or a total num)
+Category?
+Alert?
+
+# Trivial Task or Relax
+Name
+Date
+Mention?
+Lasting Time?
+
+# Appointment
+Name
+Precise Time (f,t)
+Auto Repeat?
+Auto finish?
+Alert?
+
+# Memo
+Title
+Content
+
+
+
+
