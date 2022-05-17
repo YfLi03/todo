@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import CheckBox from 'expo-checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View, TextInput, InteractionManager } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, View, TextInput, InteractionManager } from 'react-native';
 
 
 class Item{
@@ -39,7 +39,6 @@ async function storeChange(item){
 }
 
 function init(){
-
   data = new dailyData(220515)
   data.count=2
   item1 = new Item("task","aTask","220515","0")
@@ -100,11 +99,41 @@ const StandardItem = (props) =>{
     </View>
   )
 }
+  
+function item(_item){
+  key = String(_item.date) + String(_item.id) 
+  return(
+      <View key={key}>
+          <CheckBox
+              disabled={false}
+          />
+          <Text>{_item.name}</Text>
+          <Text>{_item.id}</Text>
+      </View>
+  )
+}
+const List = function (props){
+  const [obj, setObj] = useState(new dailyData(222222))
+  try{
+      console.log("GET")
+      AsyncStorage.getItem(String(props.date)).then((jsonValue)=>{
+        setObj( jsonValue == null ? dailyData(item.date) : JSON.parse(jsonValue))
+       })
+  }catch(err){
+      console.log(err)
+  }
+
+  return(
+    <ScrollView>
+        {obj.data.map(item)}
+    </ScrollView>
+ )
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
-
+        <List date="220515"/>
         {/*notice the double curly braces {{ }} 
         surrounding style‘s width and height. 
         In JSX, JavaScript values are referenced with {}. 
@@ -118,8 +147,7 @@ export default function App() {
   {{width: 200, height: 200}}*/}
         
       
-      <StandardItem date="220515" id="1"/>
-      <StandardItem date="220515" id="0"/>
+      <List date="220515"/>
       
     </View>
     //use {} to include javascript code
