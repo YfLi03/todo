@@ -26,7 +26,7 @@ class dailyData{
 
 async function storeChange(_item){
     try{
-        console.log(_item)
+        //console.log(_item)
         jsonValue = await AsyncStorage.getItem(String(_item.date))
         obj = (jsonValue==null ? dailyData(_item.date) : JSON.parse(jsonValue)) 
         obj.data[_item.id] = _item
@@ -38,7 +38,7 @@ async function storeChange(_item){
 }
 
 function item(_item,states, updateStates){
-    console.log("inside")
+    //console.log("inside")
  
     key = String(_item.date) + String(_item.id) 
     //finished items should not appear here
@@ -64,34 +64,38 @@ function item(_item,states, updateStates){
   }
 
 export default function List (props){
-    var state = new Array();
+
     const [obj, setObj] = useState(new dailyData(222222))
-    const [states, setStates] = useState(state)
-    console.log("listRefreshed:")
-    console.log(states)
+    const [states, setStates] = useState(new Array())
+ 
     const updateStates = (newStates) => {setStates(newStates)}
-    if(obj.date==222222)
-        try{
-            //console.log("listInit")
-            AsyncStorage.getItem(String(props.date)).then((jsonValue)=>{
-                dateData = jsonValue == null ? dailyData(item.date) : JSON.parse(jsonValue)
+
+    if(obj.date!=props.date)
+
+        AsyncStorage.getItem(String(props.date)).then((jsonValue)=>{
+            console.log("readSuccess")
+            console.log(jsonValue)
+            if(jsonValue == null){
+                dateData = new dailyData(props.date)
+                jsonValue = JSON.stringify(dateData)
+                AsyncStorage.setItem(jsonValue, String(props.date)).then(()=>{
+                    setObj(dateData)
+                })
+            }else{
+                dateData = JSON.parse(jsonValue)
                 setObj(dateData)
                 var tempStates = new Array()
-
-                for(i=0; i<dateData.data.length; i++){
-                    console.log(i)
+                for(i=0; i<dateData.data.length; i++)
                     tempStates[i] = dateData.data[i].state =="unfinished" ? false : true
-                }
-                console.log(tempStates)
                 setStates(tempStates)
-                })
-        }catch(err){
-            console.log(err)
-        }
+            }
+            }).catch(err=>{console.log("readFailed");console.log(err)})
+
 
     return(
         <ScrollView>
             {obj.data.map(_item => item(_item, states, updateStates))
+            //Actually it's not necessary to give all the states array
             }
         </ScrollView>
     )
