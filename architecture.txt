@@ -7,11 +7,11 @@ $ means bind (update according to)
     - DailyScreen
         $date$
         $addItemModal$
+        $obj($date,&)$
+        $states($date,$obj)$   
         - header($date)
 
-        - list($date)
-            $obj($date,&)$
-            $states($date,$obj)$            
+        - list($date,$^obj,$states)         
             - item($^states,&)
 
 
@@ -23,3 +23,4 @@ $ means bind (update according to)
         - addItem($date, $^addItemModal,&)
             **addItem needs the list to rerender (using info from asyncstorage?)
             **so maybe the $obj$ and $state% should be defined in the dailyScreen
+            **in which function should AsyncStorage be operated? maybe all in DailyScreen?

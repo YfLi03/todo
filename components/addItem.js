@@ -1,7 +1,19 @@
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
-export default function addItem(isVisible, setVisible){
+class Item{
+  constructor(type, name, date, cnt, length = 0){
+    this.type = type;
+    this.name = name;
+    this.date = date;
+    this.state = "unfinished";
+    this.id = cnt;
+    this.length = length
+  }
+}
+
+
+export default function addItem(isVisible, setVisible, add){
     return(
         <Modal
             animationType="slide"
@@ -17,7 +29,10 @@ export default function addItem(isVisible, setVisible){
                 <Text style={styles.modalText}>Hello World!</Text>
                 <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setVisible(!isVisible)}
+                onPress={() =>{
+                  setVisible(!isVisible)
+                  add("task","try",220520,30)
+                }}
                 >
                 <Text style={styles.textStyle}>Hide Modal</Text>
                 </Pressable>

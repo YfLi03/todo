@@ -5,18 +5,6 @@ import item from './item.js'
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 
 
-
-
-class Item{
-    constructor(type, name, date, cnt, length = 0){
-      this.type = type;
-      this.name = name;
-      this.date = date;
-      this.state = "unfinished";
-      this.id = cnt;
-      this.length = length
-    }
-  }
   
 class dailyData{
     constructor(date){
@@ -41,29 +29,17 @@ async function storeChange(_item){
 
 export default function List (props){
 
-    const [obj, setObj] = useState(new dailyData(222222))
-    const [states, setStates] = useState(new Array())
+    const updateObj = props.updateObj;
+    states = props.states;
+    obj = props.obj;
+    console.log(obj)
+    console.log(states)
  
-    const updateStates = (item, newStates) => {storeChange(item); setStates(newStates)}
-    console.log("rerendered")
-    if(obj.date!=props.date)
-
-        AsyncStorage.getItem(String(props.date)).then((jsonValue)=>{
-            if(jsonValue == null){
-                dateData = new dailyData(props.date)
-                jsonValue = JSON.stringify(dateData)
-                AsyncStorage.setItem(String(props.date),jsonValue).then(()=>{
-                    setObj(dateData)
-                })
-            }else{
-                dateData = JSON.parse(jsonValue)
-                setObj(dateData)
-                var tempStates = new Array()
-                for(i=0; i<dateData.data.length; i++)
-                    tempStates[i] = dateData.data[i].state =="unfinished" ? false : true
-                setStates(tempStates)
-            }
-            }).catch(err=>{console.log("readFailed");console.log(err)})
+    const updateStates = (_item) => {
+        storeChange(_item).then(()=>{
+            updateObj();
+        })
+    }
 
 
     return(

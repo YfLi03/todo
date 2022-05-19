@@ -1,17 +1,86 @@
 import List from '../components/list.js'
 import addItem from '../components/addItem.js'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React,{useState} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 
-function dateToNum (date){
-    return (date.getFullYear()%100)*10000+date.getMonth()*100+date.getDate();
+function dateToNum (_date){
+    return (_date.getFullYear()%100)*10000+_date.getMonth()*100+_date.getDate();
 }
 
+class dailyData{
+    constructor(date){
+      this.date = date
+      this.count = 0
+      this.data = new Array()
+    }
+}
+
+class Item{
+    constructor(type, name, date, cnt, length = 0){
+      this.type = type;
+      this.name = name;
+      this.date = date;     //string
+      this.state = "unfinished";
+      this.id = cnt;
+      this.length = length
+    }
+  }
+  
+
 export default function DailyScreen (props){
-    const[_date,setDate] = useState(Number(props.date))
+    const[date,setDate] = useState(Number(props.date))
     const[addItemVisible, setAddItemVisible] = useState(false)
-    date = new Date(_date/10000+2000, (_date/100)%100, _date%100)
+    const[obj, setObj] = useState(new dailyData(222222))
+
+    //it's unnecessary to make 'states' a rn-state obj
+    //actually it's unnecessary to process it in this function
+    states = new Array()
+    for(i=0; i<obj.data.length; i++)
+        states[i] = newDateObj.data[i].state =="unfinished" ? false : true
+
+    //must be called when setDate is called
+    //update obj and states(if Necessary) at the same time 
+    function updateObj(_date = date){
+        console.log("updateObjWith"+String(_date))
+        AsyncStorage.getItem(String(_date)).then(jsonValue =>{
+            if(jsonValue == null){
+                newDateObj = new dailyData(_date)
+                jsonValue = JSON.stringify(newDateObj)
+                AsyncStorage.setItem(String(_date),jsonValue).then(()=>{
+                    setObj(newDateObj)
+                })
+            }else{
+                newDateObj = JSON.parse(jsonValue)
+                setObj(newDateObj)
+            }
+            console.log("updatedObjWith"+String(_date))
+        })
+    }
+
+    function add(type, name, __date, length){
+        AsyncStorage.getItem(String(__date)).then(jsonValue =>{
+            if(jsonValue == null){
+                newDateObj = new dailyData(__date)
+                
+            }else{
+                newDateObj = JSON.parse(jsonValue)
+            }
+            console.log(newDateObj)
+            newDateObj.data[newDateObj.count] = new Item(type,name,String(__date),newDateObj.count,length)
+            newDateObj.count++; 
+            jsonValue = JSON.stringify(newDateObj)
+            AsyncStorage.setItem(String(__date),jsonValue).then(()=>{
+                updateObj()
+            })
+            console.log("addedItem")
+        })
+    }
+
+
+
+    if(obj.date==222222)updateObj();
+    _date = new Date(date/10000+2000, (date/100)%100, date%100)
 
     const closeAddItem =(visible, add)=>{
         setAddItemVisible(visible)
@@ -19,24 +88,26 @@ export default function DailyScreen (props){
 
     return(
         <View style={styles.container}>
-            {addItem(addItemVisible,closeAddItem)}
+            {addItem(addItemVisible,closeAddItem,add)}
 
             <View style={styles.header}>
                 <Text style={styles.titleText}>
-                    {date.getMonth()+'/'+date.getDate()}
+                    {_date.getMonth()+'/'+_date.getDate()}
                 </Text>
             </View>
             <View style={styles.body}>
 
-                <List style={styles.list} date={_date}/>
+                <List style={styles.list} updateObj={updateObj} states={states} obj={obj}/>
 
             </View>
             <View style={styles.footer}>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={()=>{
-                        date.setDate(date.getDate()-1)
-                        setDate(dateToNum(date))
+                        _date.setDate(_date.getDate()-1)
+                        setDate(dateToNum(_date))
+                        updateObj(dateToNum(_date));
+                        //setState is Async and doesn't support promise/callback
                     }}
                 >
                     <Text>⬅</Text>
@@ -45,7 +116,7 @@ export default function DailyScreen (props){
                 <TouchableOpacity
                     style={styles.add_button}
                     onPress={()=>{
-                        setDate(_date) //will the list rerender?
+                        //setDate(date) //will the list rerender?
                         setAddItemVisible(true)
                     }}
                 >
@@ -55,8 +126,9 @@ export default function DailyScreen (props){
                 <TouchableOpacity
                     style={styles.button}
                     onPress={()=>{
-                        date.setDate(date.getDate()+1)
-                        setDate(dateToNum(date))
+                        _date.setDate(_date.getDate()+1)
+                        setDate(dateToNum(_date))
+                        updateObj(dateToNum(_date));
                     }}
                 >
                     <Text>➡</Text>
