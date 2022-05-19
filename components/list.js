@@ -45,7 +45,7 @@ export default function List (props){
     const [states, setStates] = useState(new Array())
  
     const updateStates = (item, newStates) => {storeChange(item); setStates(newStates)}
-
+    console.log("rerendered")
     if(obj.date!=props.date)
 
         AsyncStorage.getItem(String(props.date)).then((jsonValue)=>{

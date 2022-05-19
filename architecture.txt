@@ -1,0 +1,25 @@
+$ means bind (update according to)
+^ means having the ability to change the value
+& means using AsyncStorage
+
+
+- Main
+    - DailyScreen
+        $date$
+        $addItemModal$
+        - header($date)
+
+        - list($date)
+            $obj($date,&)$
+            $states($date,$obj)$            
+            - item($^states,&)
+
+
+        - footer($^date,^addItemModal)
+            - prev ($^date)
+            - add (^addItemModal)
+            - next ($^date)
+
+        - addItem($date, $^addItemModal,&)
+            **addItem needs the list to rerender (using info from asyncstorage?)
+            **so maybe the $obj$ and $state% should be defined in the dailyScreen

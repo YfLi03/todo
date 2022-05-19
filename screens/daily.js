@@ -1,4 +1,6 @@
 import List from '../components/list.js'
+import addItem from '../components/addItem.js'
+
 import React,{useState} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 
@@ -8,10 +10,17 @@ function dateToNum (date){
 
 export default function DailyScreen (props){
     const[_date,setDate] = useState(Number(props.date))
+    const[addItemVisible, setAddItemVisible] = useState(false)
     date = new Date(_date/10000+2000, (_date/100)%100, _date%100)
-    
+
+    const closeAddItem =(visible, add)=>{
+        setAddItemVisible(visible)
+    }
+
     return(
         <View style={styles.container}>
+            {addItem(addItemVisible,closeAddItem)}
+
             <View style={styles.header}>
                 <Text style={styles.titleText}>
                     {date.getMonth()+'/'+date.getDate()}
@@ -36,7 +45,8 @@ export default function DailyScreen (props){
                 <TouchableOpacity
                     style={styles.add_button}
                     onPress={()=>{
-                        
+                        setDate(_date) //will the list rerender?
+                        setAddItemVisible(true)
                     }}
                 >
                     <Text>➕</Text>
