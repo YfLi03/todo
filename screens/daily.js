@@ -18,6 +18,11 @@ export default function DailyScreen (props){
                 </Text>
             </View>
             <View style={styles.body}>
+
+                <List style={styles.list} date={_date}/>
+
+            </View>
+            <View style={styles.footer}>
                 <TouchableOpacity
                     style={styles.button}
                     onPress={()=>{
@@ -28,7 +33,14 @@ export default function DailyScreen (props){
                     <Text>⬅</Text>
                 </TouchableOpacity>
 
-                <List style={styles.list} date={_date}/>
+                <TouchableOpacity
+                    style={styles.add_button}
+                    onPress={()=>{
+                        
+                    }}
+                >
+                    <Text>➕</Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.button}
@@ -39,6 +51,8 @@ export default function DailyScreen (props){
                 >
                     <Text>➡</Text>
                 </TouchableOpacity>
+
+
             </View>
         </View>
     )
@@ -54,12 +68,22 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         alignItems:"center"
     },
+    footer:{
+        flex: 1,
+        flexDirection:"row",
+    },
     body:{
         flex:6,
         flexDirection:"row"
     },
     button:{
         flex:1,
+        alignItems: "center",
+        justifyContent:"center",
+
+    },
+    add_button:{
+        flex:6,
         alignItems: "center",
         justifyContent:"center",
 
