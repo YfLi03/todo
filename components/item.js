@@ -23,9 +23,13 @@ export default function item(_item,states, updateStates){
     } else{
         length = String(item.length)
     }
+    if(_item.states=="finished"||_item.states=="finishing") _style = styles.finishedItem;
+        else    _style= styles.item
+    //unfinished
+
     //finished items should not appear here
     return(
-        <View key={key} style={styles.item}>
+        <View key={key} style={_style}>
             <View style={styles.Left}>
                 <Text style={styles.LeftText}>{length}</Text>
             </View>
@@ -33,14 +37,25 @@ export default function item(_item,states, updateStates){
 
             <View style={styles.Checkbox}>
                 <CheckBox 
-                    value={states[_item.id]}
+                    value={(_item.state=="finished"||_item.state=="finishing")}
                     color={_item.type=='task'?'darkslateblue':'firebrick'}
                     onValueChange={(newValue)=>{
-                        var newStates =Array.from(states)
-                        newStates[_item.id] = newValue                    
-                        _item.state = newValue ? "finished" : "unfinished"
-                        //storeChange(_item)
-                        updateStates(_item, newStates)
+                        if(newValue==true){
+                            _item.state = "finishing";
+                            updateStates(_item, states)
+                        }else{
+                            _item.state = "unfinishing";
+                            updateStates(_item, states)
+                        }
+
+                        setTimeout(()=>{
+                            var newStates =Array.from(states)
+                            newStates[_item.id] = newValue                    
+                            _item.state = newValue ? "finished" : "unfinished"
+                            //storeChange(_item)
+                            updateStates(_item, newStates);
+                        },500)
+                        
                     }}
                 />
             </View>
@@ -55,6 +70,14 @@ export default function item(_item,states, updateStates){
 
   const styles = StyleSheet.create({
     item:{
+        opacity:1,
+        height: 60,
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"flex-start",
+    },
+    finishedItem:{
+        opacity: 0.6,
         height: 60,
         flexDirection:"row",
         alignItems:"center",

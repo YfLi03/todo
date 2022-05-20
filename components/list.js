@@ -44,8 +44,13 @@ export default function List (props){
 
     return(
         <ScrollView>
-            {obj.data.map(_item => item(_item, states, updateStates))
+            {
+                obj.data.map(_item =>  (_item.state=="unfinished"||_item.state=="finishing") ?  item(_item, states, updateStates):null)
             //Actually it's not necessary to give all the states array
+
+            }
+            {
+                obj.data.map(_item =>  (_item.state=="finished"||_item.state=="unfinishing") ?  item(_item, states, updateStates):null)
             }
         </ScrollView>
     )

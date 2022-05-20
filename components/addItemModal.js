@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
 class Item{
@@ -13,7 +13,7 @@ class Item{
 }
 
 
-export default function addItem(isVisible, setVisible, add){
+export default function addItemModal(isVisible, setVisible, add){
     return(
         <Modal
             animationType="slide"
@@ -27,15 +27,27 @@ export default function addItem(isVisible, setVisible, add){
             <View style={styles.centeredView}>
             <View style={styles.modalView}>
                 <Text style={styles.modalText}>Hello World!</Text>
-                <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() =>{
-                  setVisible(!isVisible)
-                  add("task","try",220520,30)
-                }}
-                >
-                <Text style={styles.textStyle}>Hide Modal</Text>
-                </Pressable>
+                <View style={styles.buttonView}>
+                    <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() =>{
+                      setVisible(!isVisible)
+                      add("task","try",220520,30)
+                    }}
+                    >
+                    <Text style={styles.textStyle}>Confirm</Text>
+                    </Pressable>
+                    <View style={styles.button_margin}/>
+                    <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() =>{
+                      setVisible(!isVisible)
+                      add("appointment","tre",220520,10)
+                    }}
+                    >
+                    <Text style={styles.textStyle}>Hide Modal</Text>
+                    </Pressable>
+                </View>
             </View>
             </View>
         </Modal>
@@ -66,9 +78,16 @@ const styles = StyleSheet.create({
       elevation: 5
     },
     button: {
+      flex:5,
       borderRadius: 20,
       padding: 10,
       elevation: 2
+    },
+    button_margin:{
+      flex:1,
+    },
+    buttonView: {
+      flexDirection: "row"
     },
     buttonOpen: {
       backgroundColor: "#F194FF",

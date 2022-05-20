@@ -1,5 +1,5 @@
 import List from '../components/list.js'
-import addItem from '../components/addItem.js'
+import addItemModal from '../components/addItemModal.js'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React,{useState} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
@@ -37,7 +37,8 @@ export default function DailyScreen (props){
     //actually it's unnecessary to process it in this function
     states = new Array()
     for(i=0; i<obj.data.length; i++)
-        states[i] = newDateObj.data[i].state =="unfinished" ? false : true
+        states[i] = (newDateObj.data[i].state =="unfinished"||newDateObj.data[i].state =="finishing") ? false : true
+    //states decide it's location on the list
 
     //must be called when setDate is called
     //update obj and states(if Necessary) at the same time 
@@ -88,7 +89,7 @@ export default function DailyScreen (props){
 
     return(
         <View style={styles.container}>
-            {addItem(addItemVisible,closeAddItem,add)}
+            {addItemModal(addItemVisible,closeAddItem,add)}
 
             <View style={styles.header}>
                 <Text style={styles.titleText}>
