@@ -42,6 +42,9 @@ export default function DailyScreen (props){
 
     //must be called when setDate is called
     //update obj and states(if Necessary) at the same time 
+    
+    //need some amendments, when there's no update of info, asyncstorage is
+    //very inefficient!
     function updateObj(_date = date){
         console.log("updateObjWith"+String(_date))
         AsyncStorage.getItem(String(_date)).then(jsonValue =>{
