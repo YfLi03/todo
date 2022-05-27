@@ -1,5 +1,5 @@
 import List from '../components/list.js'
-import addItemModal from '../components/addItemModal.js'
+import addItemModal from '../components/addItem/modal.js'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React,{useState} from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
@@ -63,6 +63,11 @@ export default function DailyScreen (props){
     }
 
     function add(type, name, __date, length){
+        console.log("--------")
+        console.log(type)
+        console.log(name)
+        console.log(__date)
+        console.log(length)
         AsyncStorage.getItem(String(__date)).then(jsonValue =>{
             if(jsonValue == null){
                 newDateObj = new dailyData(__date)

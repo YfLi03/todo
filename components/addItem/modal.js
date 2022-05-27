@@ -1,6 +1,8 @@
 import React,{useState} from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, Button } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import ChooseType from "./type";
+import Length from "./length";
 
 class Item{
   constructor(type, name, date, cnt, length = 0){
@@ -15,10 +17,11 @@ class Item{
 
 
 export default function addItemModal(isVisible, setVisible, add){
-    const [newItem,setNewItem] = useState('');
-    const [itemType,setItemType] = useState('Task');
-    const [itemDate,setItemDate] = useState(new Date(1648051730000))
+    const [name,setName] = useState('');
+    const [itemType,setItemType] = useState('task');
+    const [itemDate,setItemDate] = useState(new Date()) //is set to current date by default
     const [show,setShow] = useState(false);
+    const [itemLength, setLength] = useState(30)
     const onChange = (event, selectedDate) =>{
       setItemDate(selectedDate);
       setShow(false);
@@ -41,36 +44,28 @@ export default function addItemModal(isVisible, setVisible, add){
             <View style={styles.modalView}>
                 <TextInput
                 placeholder="new item"
-                onChangeText={text=>setNewItem(text)}
-                defaultValue={newItem}
+                onChangeText={text=>setName(text)}
+                defaultValue={name}
                 /> 
-                <View style={styles.chooseType}>
-                  <Button
-                  title="Appointment"
-                  color = {itemType=="Appointment"? "#007AFF" : "#39C5BB"}
-                  onPress={()=>setItemType("Appointment")}
-                  />
-                  <Button
-                  title="Task"
-                  color = {itemType=="Task"? "#007AFF" : "#39C5BB"}
-                  onPress={()=>setItemType("Task")}
-                  />
-                </View>
+
+                {ChooseType(itemType, setItemType)}
 
                 <Button onPress={showDatepicker}
                 title={itemDate.toLocaleDateString()}
                 />
-                <Text style={styles.modalText}>Hello World!</Text>
+
+                {Length(itemLength,setLength)}
+
                 <View style={styles.buttonView}>
 
                     <Pressable
                     style={[styles.button, styles.buttonClose]}
                     onPress={() =>{
                       setVisible(!isVisible)
-                      add("task","try",220520,30)
+                      setShow(false)
                     }}
                     >
-                    <Text style={styles.textStyle}>Confirm</Text>
+                    <Text style={styles.textStyle}>Cancel</Text>
                     </Pressable>
 
                     <View style={styles.button_margin}/>
@@ -79,10 +74,13 @@ export default function addItemModal(isVisible, setVisible, add){
                     style={[styles.button, styles.buttonClose]}
                     onPress={() =>{
                       setVisible(!isVisible)
-                      add("appointment","tre",220520,10)
+                      setShow(false)
+                      console.log(itemDate)
+                      date = (itemDate.getFullYear()%100)*10000+(itemDate.getMonth()+1)*100+itemDate.getDate();
+                      add(itemType,name,date,itemLength)
                     }}
                     >
-                    <Text style={styles.textStyle}>Hide Modal</Text>
+                    <Text style={styles.textStyle}>Confirm</Text>
                     </Pressable>
 
                 </View>
@@ -116,7 +114,7 @@ const styles = StyleSheet.create({
       backgroundColor: "white",
       borderRadius: 20,
       padding: 35,
-      alignItems: "center",
+      alignItems: "flex-start",
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
@@ -152,9 +150,6 @@ const styles = StyleSheet.create({
     modalText: {
       marginBottom: 15,
       textAlign: "center"
-    },
-    chooseType:{
-      flexDirection:"row",
     },
     selectedType:{
       color:"#39c5bb"
