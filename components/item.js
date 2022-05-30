@@ -14,46 +14,45 @@ class Item{
   }
   
 
-export default function item(_item,states, updateStates){
+export default function displayItem(item, states, updateStates){
     //console.log("inside")
  
-    key = String(_item.date) + String(_item.id)
-    if(_item.length==undefined || _item.length==0){
-        length = "-"
+    key = String(item.date) + String(item.id)
+    if(item.start==undefined || item.start<0){
+        start = "--"
     } else{
-        length = String(item.length)
+        start = String(parseInt(item.start/100)+":"+item.start%100)
     }
-    if(_item.states=="finished"||_item.states=="finishing") _style = styles.finishedItem;
-        else    _style= styles.item
     //unfinished
 
     //finished items should not appear here
     return(
-        <View key={key} style={_style}>
+        <View key={key} style={(item.state=="finished"||item.state=="finishing") ? styles.finishedItem : styles.item}>
+
             <View style={styles.Left}>
-                <Text style={styles.LeftText}>{length}</Text>
+                <Text style={styles.LeftText}>{start}</Text>
             </View>
 
 
             <View style={styles.Checkbox}>
                 <CheckBox 
-                    value={(_item.state=="finished"||_item.state=="finishing")}
-                    color={_item.type=='task'?'darkslateblue':'firebrick'}
+                    value={(item.state=="finished"||item.state=="finishing")}
+                    color={item.type=='task'?'darkslateblue':'firebrick'}
                     onValueChange={(newValue)=>{
                         if(newValue==true){
-                            _item.state = "finishing";
-                            updateStates(_item, states)
+                            item.state = "finishing";
+                            updateStates(item, states)
                         }else{
-                            _item.state = "unfinishing";
-                            updateStates(_item, states)
+                            item.state = "unfinishing";
+                            updateStates(item, states)
                         }
 
                         setTimeout(()=>{
                             var newStates =Array.from(states)
-                            newStates[_item.id] = newValue                    
-                            _item.state = newValue ? "finished" : "unfinished"
-                            //storeChange(_item)
-                            updateStates(_item, newStates);
+                            newStates[item.id] = newValue                    
+                            item.state = newValue ? "finished" : "unfinished"
+                            //storeChange(item)
+                            updateStates(item, newStates);
                         },500)
                         
                     }}
@@ -61,8 +60,8 @@ export default function item(_item,states, updateStates){
             </View>
 
             <View style={styles.Right}>
-                <Text>{_item.name}</Text>
-                <Text>{_item.id}</Text>
+                <Text>{item.name}</Text>
+                <Text>{item.id}</Text>
             </View>
         </View>
     )
@@ -83,6 +82,12 @@ export default function item(_item,states, updateStates){
         alignItems:"center",
         justifyContent:"flex-start",
     },
+    text:{
+        
+    },
+    finishedText:{
+        color:"#D3D3D3"
+    },
 
 
     Right:{
@@ -96,12 +101,14 @@ export default function item(_item,states, updateStates){
         justifyContent:"center",
         alignContent:"center",
         padding:10,
-      },
+    },
+    LeftText:{
+        fontSize:15,
+        textAlign:"center",
+        fontWeight:"bold"
+    },
     Checkbox:{
         flex:1,
     },
-    LeftText:{
-        fontSize:40,
-    }
   });
   
